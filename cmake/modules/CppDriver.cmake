@@ -144,6 +144,7 @@ endmacro()
 #------------------------
 macro(CassConfigureShared prefix)
   target_link_libraries(${PROJECT_LIB_NAME} ${${prefix}_LIBS})
+  target_link_libraries(${PROJECT_LIB_NAME} ${LIBUV_LIBRARY})
   set_target_properties(${PROJECT_LIB_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_LIB_NAME})
   set_target_properties(${PROJECT_LIB_NAME} PROPERTIES VERSION ${PROJECT_VERSION_STRING} SOVERSION ${PROJECT_VERSION_MAJOR})
   set_target_properties(${PROJECT_LIB_NAME} PROPERTIES LINK_FLAGS "${PROJECT_CXX_LINKER_FLAGS}")
@@ -169,6 +170,7 @@ endmacro()
 #------------------------
 macro(CassConfigureStatic prefix)
   target_link_libraries(${PROJECT_LIB_NAME_STATIC} ${${prefix}_LIBS})
+  target_link_libraries(${PROJECT_LIB_NAME_STATIC} ${LIBUV_LIBRARY})
   set_target_properties(${PROJECT_LIB_NAME_STATIC} PROPERTIES OUTPUT_NAME ${PROJECT_LIB_NAME_STATIC})
   set_target_properties(${PROJECT_LIB_NAME_STATIC} PROPERTIES VERSION ${PROJECT_VERSION_STRING} SOVERSION ${PROJECT_VERSION_MAJOR})
   set_target_properties(${PROJECT_LIB_NAME_STATIC} PROPERTIES LINK_FLAGS "${PROJECT_CXX_LINKER_FLAGS}")
@@ -303,14 +305,14 @@ endmacro()
 #------------------------
 macro(CassPolicies)
   # TODO: Figure out Mac OS X rpath
-  if(POLICY CMP0042)
-    cmake_policy(SET CMP0042 OLD)
-  endif()
+  #if(POLICY CMP0042)
+  #  cmake_policy(SET CMP0042 OLD)
+  #endif()
 
   # Force OLD style of project versioning variables
-  if(POLICY CMP0048)
-    cmake_policy(SET CMP0048 OLD)
-  endif()
+  #if(POLICY CMP0048)
+  #  cmake_policy(SET CMP0048 OLD)
+  #endif()
 endmacro()
 
 #------------------------
@@ -685,9 +687,9 @@ endmacro()
 #------------------------
 macro(CassSetCompilerFlags)
   # Force OLD style of implicitly dereferencing variables
-  if(POLICY CMP0054)
-    cmake_policy(SET CMP0054 OLD)
-  endif()
+  #if(POLICY CMP0054)
+  #  cmake_policy(SET CMP0054 OLD)
+  #endif()
 
   # Determine if all GNU extensions should be enabled
   if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
