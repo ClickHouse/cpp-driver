@@ -627,7 +627,7 @@ namespace openssl {
 
 
 void OpenSslContextFactory::internal_init() {
-  CRYPTO_set_mem_functions(openssl::malloc, openssl::realloc, openssl::free);
+  //CRYPTO_set_mem_functions(openssl::malloc, openssl::realloc, openssl::free);
 
   SSL_library_init();
   SSL_load_error_strings();
@@ -664,8 +664,8 @@ void OpenSslContextFactory::internal_thread_cleanup() {
 
 void OpenSslContextFactory::internal_cleanup() {
   RAND_cleanup();
-  ENGINE_cleanup();
-  CONF_modules_unload(1);
+//  ENGINE_cleanup();
+//  CONF_modules_unload(1);
   CONF_modules_free();
   EVP_cleanup();
   ERR_free_strings();
