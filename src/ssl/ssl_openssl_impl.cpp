@@ -436,9 +436,6 @@ OpenSslSession::OpenSslSession(const Address& address, const String& hostname,
     , incoming_bio_(rb::RingBufferBio::create(&incoming_state_))
     , outgoing_bio_(rb::RingBufferBio::create(&outgoing_state_)) {
   SSL_set_bio(ssl_, incoming_bio_, outgoing_bio_);
-#if DEBUG_SSL
-  SSL_CTX_set_info_callback(ssl_ctx, ssl_info_callback);
-#endif
   SSL_set_connect_state(ssl_);
 
   if (!sni_server_name_.empty()) {
@@ -542,6 +539,13 @@ OpenSslContext::OpenSslContext()
     , trusted_store_(X509_STORE_new()) {
   SSL_CTX_set_cert_store(ssl_ctx_, trusted_store_);
   SSL_CTX_set_verify(ssl_ctx_, SSL_VERIFY_NONE, ssl_no_verify_callback);
+#if (OPENSSL_VERSION_NUMBER >= 0x10100000L)
+  // Limit to TLS 1.2 for now. TLS 1.3 has broken the handshake code.
+  SSL_CTX_set_max_proto_version(ssl_ctx_, TLS1_2_VERSION);
+#endif
+#if DEBUG_SSL
+  SSL_CTX_set_info_callback(ssl_ctx_, ssl_info_callback);
+#endif
 }
 
 OpenSslContext::~OpenSslContext() { SSL_CTX_free(ssl_ctx_); }
@@ -618,7 +622,7 @@ void free(void* ptr, const char* file, int line) { Memory::free(ptr); }
 } // namespace openssl
 
 void OpenSslContextFactory::internal_init() {
-  CRYPTO_set_mem_functions(openssl::malloc, openssl::realloc, openssl::free);
+  //CRYPTO_set_mem_functions(openssl::malloc, openssl::realloc, openssl::free);
 
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
   SSL_library_init();
@@ -658,9 +662,9 @@ void OpenSslContextFactory::internal_thread_cleanup() {
 void OpenSslContextFactory::internal_cleanup() {
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
   RAND_cleanup();
-  ENGINE_cleanup();
+  //ENGINE_cleanup();
 #endif
-  CONF_modules_unload(1);
+  //CONF_modules_unload(1);
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
   CONF_modules_free();
   EVP_cleanup();
