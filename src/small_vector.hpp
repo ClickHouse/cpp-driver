@@ -28,12 +28,14 @@ namespace datastax { namespace internal {
 // small and doesn't excceed the fixed buffer.
 
 template <class T, size_t N>
-class SmallVector : public std::vector<T, FixedAllocator<T, N> > {
+__attribute__((__no_sanitize__("memory"))) class SmallVector : public std::vector<T, FixedAllocator<T, N> > {
 public:
   SmallVector()
       : std::vector<T, FixedAllocator<T, N> >(FixedAllocator<T, N>(&fixed_)) {
     this->reserve(N);
   }
+
+  __attribute__((__no_sanitize__("memory"))) ~SmallVector() = default;
 
   SmallVector(size_t inital_size)
       : std::vector<T, FixedAllocator<T, N> >(FixedAllocator<T, N>(&fixed_)) {
