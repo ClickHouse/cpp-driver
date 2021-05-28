@@ -37,17 +37,17 @@ namespace datastax { namespace internal {
 // constructor.
 
 template <size_t N, size_t A>
-class AlignedStorage;
+__attribute__((__no_sanitize__("memory"))) class AlignedStorage;
 
-#define ALIGNED_STORAGE(Alignment)                \
-  template <size_t N>                             \
-  class AlignedStorage<N, Alignment> {            \
-  public:                                         \
-    void* address() { return data_; }             \
-    const void* address() const { return data_; } \
-                                                  \
-  private:                                        \
-    ALIGN_AS(Alignment) char data_[N];            \
+#define ALIGNED_STORAGE(Alignment)                                                \
+  template <size_t N>                                                             \
+  __attribute__((__no_sanitize__("memory"))) class AlignedStorage<N, Alignment> { \
+  public:                                                                         \
+    void* address() { return data_; }                                             \
+    const void* address() const { return data_; }                                 \
+                                                                                  \
+  private:                                                                        \
+    ALIGN_AS(Alignment) char data_[N];                                            \
   }
 
 ALIGNED_STORAGE(1);
